@@ -1,0 +1,57 @@
+services:
+  iris-a:
+    image: intersystems/irishealth-community:2026.1
+    container_name: iris-health-a
+    restart: unless-stopped
+
+    environment:
+      ISC_DATA_DIRECTORY: /durable
+      TZ: Europe/Helsinki
+      INFLUXDB_SERVER: influxdb
+      INFLUXDB_PORT: 8086
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
+      INFLUXDB_ORG: ${INFLUXDB_ORG}
+      INFLUXDB_TOKEN: ${INFLUXDB_TOKEN}
+
+    volumes:
+      - ./iris-a/data:/durable
+
+    ports:
+      - "52773:52773"
+      - "1972:1972"
+      - "55100:55100"
+      - "55101:55101"
+
+    networks:
+      - monitoring-network
+
+  iris-b:
+    image: intersystems/irishealth-community:2026.1
+    container_name: iris-health-b
+    restart: unless-stopped
+
+    environment:
+      ISC_DATA_DIRECTORY: /durable
+      TZ: Europe/Helsinki
+      INFLUXDB_SERVER: influxdb
+      INFLUXDB_PORT: 8086
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
+      INFLUXDB_ORG: ${INFLUXDB_ORG}
+      INFLUXDB_TOKEN: ${INFLUXDB_TOKEN}
+
+    volumes:
+      - ./iris-b/data:/durable
+
+    ports:
+      - "52774:52773"
+      - "1973:1972"
+      - "55102:55100"
+      - "55103:55101"
+
+    networks:
+      - monitoring-network
+
+networks:
+  monitoring-network:
+    external: true
+    name: monitoring-network
