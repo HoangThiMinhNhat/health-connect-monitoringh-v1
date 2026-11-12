@@ -1,0 +1,98 @@
+{
+  "annotations": [],
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "iteration": 1,
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Cache Efficiency",
+      "type": "timeseries",
+      "datasource": { "type": "influxdb", "uid": "influxdb_central" },
+      "targets": [
+        {
+          "query": "from(bucket: \"health_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"health_connect_metrics\")\n  |> filter(fn: (r) => r[\"_field\"] == \"cache_efficiency\")\n  |> filter(fn: (r) => r[\"instance\"] =~ /^${instance:regex}$/)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "title": "IRIS Process Count",
+      "type": "timeseries",
+      "datasource": { "type": "influxdb", "uid": "influxdb_central" },
+      "targets": [
+        {
+          "query": "from(bucket: \"health_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"health_connect_metrics\")\n  |> filter(fn: (r) => r[\"_field\"] == \"process_count\")\n  |> filter(fn: (r) => r[\"instance\"] =~ /^${instance:regex}$/)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "title": "Database Size & Free Space (MB)",
+      "type": "timeseries",
+      "datasource": { "type": "influxdb", "uid": "influxdb_central" },
+      "targets": [
+        {
+          "query": "from(bucket: \"health_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"health_connect_metrics\")\n  |> filter(fn: (r) => r[\"_field\"] == \"db_size_mb\" or r[\"_field\"] == \"db_free_space_mb\")\n  |> filter(fn: (r) => r[\"instance\"] =~ /^${instance:regex}$/)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "title": "Database Latency (ms)",
+      "type": "timeseries",
+      "datasource": { "type": "influxdb", "uid": "influxdb_central" },
+      "targets": [
+        {
+          "query": "from(bucket: \"health_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"health_connect_metrics\")\n  |> filter(fn: (r) => r[\"_field\"] == \"db_latency_ms\")\n  |> filter(fn: (r) => r[\"instance\"] =~ /^${instance:regex}$/)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 16 },
+      "id": 5,
+      "title": "System Alerts Count",
+      "type": "stat",
+      "datasource": { "type": "influxdb", "uid": "influxdb_central" },
+      "targets": [
+        {
+          "query": "from(bucket: \"health_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"health_connect_metrics\")\n  |> filter(fn: (r) => r[\"_field\"] == \"alerts_count\")\n  |> filter(fn: (r) => r[\"instance\"] =~ /^${instance:regex}$/)\n  |> last()"
+        }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["health-connect", "monitoring"],
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "InterSystems Health Connect Centralized Monitoring",
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"health_metrics\", tag: \"instance\")",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instance",
+        "multi": true,
+        "name": "instance",
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"health_metrics\", tag: \"instance\")",
+        "refresh": 1,
+        "type": "query"
+      }
+    ]
+  }
+}
